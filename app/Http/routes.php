@@ -10,6 +10,11 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-Route::get('/', function(){
-
+Route::get('/application', function(){
+    return [ 'v' => '0.4.7', '_token' => csrf_token() ];
+});
+Route::group(['prefix' => 'api'], function(){
+    Route::post('/validate/token', 'LoginController@validateToken');
+    Route::post('/login', 'LoginController@login');
+    Route::post('/new/account', 'LoginController@createAccount');
 });
