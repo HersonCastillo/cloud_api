@@ -11,14 +11,14 @@ class CarpetasController extends Controller
 {
     public function newFolder(Request $request){
         try{
-            if(!empty($request['nombre']) && !empty($request['raiz'])){
-                $Count = strlen($request['nombre']);
+            if(!empty($request['ruta']) && !empty($request['raiz'])){
+                $Count = strlen($request['ruta']);
                 if($Count <= 35){
-                    $Nombre = $request['nombre'];
+                    $Nombre = $request['ruta'];
                     $Raiz = $request['raiz'];
                     Storage::disk('public')->makeDirectory($Raiz.'/'.$Nombre);
                     return response()->json([
-                        'success' => 'Folder creado con éxito.'
+                        'success' => 'Carpeta creado con éxito.'
                     ], 200);
                 }
                 return response()->json([

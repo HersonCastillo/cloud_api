@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Controllers\GruposController as Group;
+use App\Http\Controllers\UsuariosController as User;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Usuarios as Users;
@@ -95,6 +96,10 @@ class LoginController extends Controller
             $Usuario->apellido = $Apellidos;
             $Usuario->api_token = $API;
             $Usuario->save();
+
+            $idUser = User::lastUser();
+            Group::newGroup($idUser);
+
             Storage::disk('public')->makeDirectory($API);
             return response()->json([
                'success' => 'Usuario creado con éxito.',
