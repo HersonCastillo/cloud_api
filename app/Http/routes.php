@@ -17,4 +17,5 @@ Route::group(['prefix' => 'api'], function(){
     Route::post('/validate/token', 'LoginController@validateToken');
     Route::post('/login', 'LoginController@login');
     Route::post('/new/account', 'LoginController@createAccount');
+    Route::post('/new/folder', 'CarpetasController@newFolder');
 });

@@ -14,7 +14,7 @@ class CreateFolders extends Migration
     {
       Schema::create('carpetas', function(Blueprint $table){
         $table->increments('id')->autoIncrement();
-        $table->string('nombre');
+        $table->string('nombre', 250);
         $table->date('fecha_creacion');
         $table->string('id_grupo');
         $table->timestamps();

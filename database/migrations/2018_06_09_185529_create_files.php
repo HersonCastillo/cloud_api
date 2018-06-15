@@ -16,11 +16,11 @@ class CreateFiles extends Migration
           $table->increments('id')->autoIncrement();
           $table->string('nombre', 250);
           $table->date('fecha_subida');
-          $table->integer('id_carpeta');
+          $table->integer('id_grupo');
           $table->timestamps();
         });
         Schema::table('archivos', function(Blueprint $table){
-          $table->foreign('id_carpeta')->references('id')->on('carpetas');
+          $table->foreign('id_grupo')->references('id')->on('grupos');
         });
     }
 

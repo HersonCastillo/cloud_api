@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Usuarios as Users;
+use Storage;
 
 class LoginController extends Controller
 {
@@ -24,7 +25,7 @@ class LoginController extends Controller
                 'error' => 'Token de acceso no válido.',
                 'message' => 'El código de acceso pudo haber expirado.'
             ], 200);
-        }catch(Exception $ex){
+        }catch(\Exception $ex){
             return response()->json([
                 'error' => 'Token de acceso no válido',
                 'exception' => 'normal'
@@ -60,7 +61,7 @@ class LoginController extends Controller
                 'error' => 'Usuario no encontrado.',
                 'message' => 'Correo o contraseña no válidos.'
             ], 200);
-        }catch(Exception $ex){
+        }catch(\Exception $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al iniciar sesión',
                 'exception' => 'normal'
@@ -94,6 +95,7 @@ class LoginController extends Controller
             $Usuario->apellido = $Apellidos;
             $Usuario->api_token = $API;
             $Usuario->save();
+            Storage::disk('public')->makeDirectory($API);
             return response()->json([
                'success' => 'Usuario creado con éxito.',
                'message' => '.',
@@ -104,7 +106,7 @@ class LoginController extends Controller
                 'error' => 'Ocurrió un error al crear la cuenta.',
                 'exception' => 'query'
             ], 500);
-        }catch(Exception $ex){
+        }catch(\Exception $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al crear la cuenta.',
                 'exception' => 'normal'
