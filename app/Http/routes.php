@@ -18,4 +18,5 @@ Route::group(['prefix' => 'api'], function(){
     Route::post('/login', 'LoginController@login');
     Route::post('/new/account', 'LoginController@createAccount');
     Route::post('/new/folder', 'CarpetasController@newFolder');
+    Route::post('/new/file', 'ArchivosController@upload');
 });

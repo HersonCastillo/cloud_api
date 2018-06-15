@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Carpetas as Folder;
 use Storage;
 
 class CarpetasController extends Controller
