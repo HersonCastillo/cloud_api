@@ -12,4 +12,11 @@ class UsuariosController extends Controller
         $Last = Users::orderBy('id', 'desc')->first();
         return $Last->id;
     }
+    public static function getIdUser($token){
+        $User = Users::orderBy('id')
+          ->where('api_token', $token)
+          ->select('id', 'nombre', 'apellido')
+          ->first();
+        return $User->id;
+    }
 }
