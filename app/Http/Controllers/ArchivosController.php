@@ -27,7 +27,7 @@ class ArchivosController extends Controller
                 'message' => 'Ya existe un archivo con ese nombre, cambialo o elimina el archivo guardado.'
             ], 200);
 
-            Storage::disk('public')->put($Kernel.$Name, $Name);
+            $File->move("../storage/app/public/$Kernel", $Name);
 
             $Archivos = new Archivos();
             $Archivos->nombre = $Path.$Name;
@@ -83,14 +83,31 @@ class ArchivosController extends Controller
             $Token = $request['token'];
             $Path = $request['path'];
             $FileName = $request['filename'];
-            //return response()->download(storage_path('app/public/'.$Token.$Path.$FileName));
+            $Url = Storage::disk('public')->getDriver()->getAdapter()->applyPathPrefix($Token.$Path.$FileName);
+            $Url = str_replace("C:\\wamp64\\www\\", "http://localhost/", $Url);
             return response()->json([
-                'url' => Storage::disk('public')->getDriver()->getAdapter()->applyPathPrefix($Token.$Path.$FileName)
+                'url' => $Url
             ], 200);
         }catch(\Exception $ex){
             return response()->json([
                 'error' => 'No se puede descargar el archivo.',
                 'message' => $ex->getMessage()
+            ], 500);
+        }
+    }
+    public function deleteOne(Request $request){
+        try{
+            $Token = $request['token'];
+            $Path = $request['path'];
+            $Route = "../storage/app/public/";
+            $Route = $Route.$Token.$Path;
+            unlink($Route);
+            response()->json([
+                'success' => 'Elemento eliminado con éxito'
+            ], 200);
+        }catch(\Exception $ex){
+            return response()->json([
+                'error' => 'Ocurrió un error al tratar de eliminar un objeto.'
             ], 500);
         }
     }

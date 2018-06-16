@@ -21,4 +21,5 @@ Route::group(['prefix' => 'api'], function(){
     Route::post('/new/file', 'ArchivosController@upload');
     Route::post('/view/files', 'ArchivosController@viewFiles');
     Route::post('/download', 'ArchivosController@download');
+    Route::post('/delete', 'ArchivosController@deleteOne');
 });
