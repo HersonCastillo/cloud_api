@@ -6,6 +6,7 @@ use App\Http\Controllers\UsuariosController as User;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Archivos;
+use File;
 use Storage;
 
 class ArchivosController extends Controller
@@ -48,6 +49,48 @@ class ArchivosController extends Controller
             return response()->json([
                 'error' => 'Ocurrió un error al subir el archivo',
                 'exception' => 'query'
+            ], 500);
+        }
+    }
+    public function viewFiles(Request $request){
+        try{
+            $Path = $request['path'];
+            $Token = $request['token'];
+            $Route = "../storage/app/public/";
+            $files = scandir($Route.$Token.$Path);
+            $files = $this->clear($files);
+            return response()->json([
+                'success' => 'ok',
+                'data' => $files
+            ], 200);
+        } catch(\Exception $ex){
+            return response()->json([
+                'error' => 'Directorio no encontrado',
+                'message' => 'La raiz o el token no son válido.',
+                'exception' => 'notfound'
+            ], 500);
+        }
+    }
+    private function clear($arrayFiles){
+        $nArr = [];
+        foreach($arrayFiles as $file){
+            if($file != "." && $file != "..") array_push($nArr, $file);
+        }
+        return $nArr;
+    }
+    public function download(Request $request){
+        try{
+            $Token = $request['token'];
+            $Path = $request['path'];
+            $FileName = $request['filename'];
+            //return response()->download(storage_path('app/public/'.$Token.$Path.$FileName));
+            return response()->json([
+                'url' => Storage::disk('public')->getDriver()->getAdapter()->applyPathPrefix($Token.$Path.$FileName)
+            ], 200);
+        }catch(\Exception $ex){
+            return response()->json([
+                'error' => 'No se puede descargar el archivo.',
+                'message' => $ex->getMessage()
             ], 500);
         }
     }
