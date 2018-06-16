@@ -73,9 +73,9 @@ class ArchivosController extends Controller
     }
     private function clear($arrayFiles){
         $nArr = [];
-        foreach($arrayFiles as $file){
-            if($file != "." && $file != "..") array_push($nArr, $file);
-        }
+        foreach($arrayFiles as $file)
+            if($file != "." && $file != "..")
+              array_push($nArr, $file);
         return $nArr;
     }
     public function download(Request $request){
@@ -99,15 +99,32 @@ class ArchivosController extends Controller
         try{
             $Token = $request['token'];
             $Path = $request['path'];
+            $isFolder = $request['is'];
             $Route = "../storage/app/public/";
             $Route = $Route.$Token.$Path;
-            unlink($Route);
-            response()->json([
-                'success' => 'Elemento eliminado con éxito'
+            if($isFolder == "is") rmdir($Route);
+            else{
+                $archivoId = Archivos::where('nombre', $Path)->first();
+                if(!is_null($archivoId)){
+                    $archivoId = $archivoId->delete();
+                    unlink($Route);
+                } else return response()->json([
+                    'error' => 'Archivo dañado no almacenado.'
+                ], 200);
+            }
+            return response()->json([
+                'success' => 'Elemento eliminado con éxito.'
             ], 200);
         }catch(\Exception $ex){
             return response()->json([
-                'error' => 'Ocurrió un error al tratar de eliminar un objeto.'
+                'error' => 'Ocurrió un error al tratar de eliminar un objeto.',
+                'exception' => 'normal',
+                'message' => $ex->getMessage()
+            ], 500);
+        }catch(\Illuminate\Database\QueryException $ex){
+            return response()->json([
+                'error' => 'Ocurrió un error al tratar de eliminar un objeto.',
+                'exception' => 'query'
             ], 500);
         }
     }

@@ -22,4 +22,6 @@ Route::group(['prefix' => 'api'], function(){
     Route::post('/view/files', 'ArchivosController@viewFiles');
     Route::post('/download', 'ArchivosController@download');
     Route::post('/delete', 'ArchivosController@deleteOne');
+    Route::post('/shared', 'GruposController@infoFilesShared');
+    Route::post('/new/group', 'GruposController@newGroup');
 });
