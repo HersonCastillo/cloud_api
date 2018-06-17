@@ -6,6 +6,7 @@ use App\Http\Controllers\UsuariosController as User;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Archivos;
+use App\Grupos;
 use File;
 use Storage;
 
@@ -109,7 +110,9 @@ class ArchivosController extends Controller
             else{
                 $archivoId = Archivos::where('nombre', $Path)->first();
                 if(!is_null($archivoId)){
-                    $archivoId = $archivoId->delete();
+                    $Groups = Grupos::where('id_file', $archivoId->id)->get();
+                    $archivoId->delete();
+                    foreach($Groups as $Gp) $Gp->delete();
                     unlink($Route);
                 } else return response()->json([
                     'error' => 'Archivo dañado no almacenado.'

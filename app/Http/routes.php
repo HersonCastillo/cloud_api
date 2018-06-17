@@ -19,9 +19,10 @@ Route::group(['prefix' => 'api'], function(){
     Route::post('/new/account', 'LoginController@createAccount');
     Route::post('/new/folder', 'CarpetasController@newFolder');
     Route::post('/new/file', 'ArchivosController@upload');
+    Route::post('/new/group', 'GruposController@newGroup');
     Route::post('/view/files', 'ArchivosController@viewFiles');
     Route::post('/download', 'ArchivosController@download');
-    Route::post('/delete', 'ArchivosController@deleteOne');
+    Route::post('/delete/object', 'ArchivosController@deleteOne');
     Route::post('/shared', 'GruposController@infoFilesShared');
-    Route::post('/new/group', 'GruposController@newGroup');
+    Route::post('delete/share', 'GruposController@quitShare');
 });
