@@ -83,7 +83,10 @@ class ArchivosController extends Controller
             $Token = $request['token'];
             $Path = $request['path'];
             $FileName = $request['filename'];
-            $Url = Storage::disk('public')->getDriver()->getAdapter()->applyPathPrefix($Token.$Path.$FileName);
+            $Url = Storage::disk('public')
+                    ->getDriver()
+                    ->getAdapter()
+                    ->applyPathPrefix($Token.$Path.$FileName);
             $Url = str_replace("C:\\wamp64\\www\\", "http://localhost/", $Url);
             return response()->json([
                 'url' => $Url

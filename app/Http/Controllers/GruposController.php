@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Grupos as Groups;
+use App\Archivos as Files;
 
 class GruposController extends Controller
 {
     public function newGroup(Request $request){
         try{
-            //$FileId = $request['id'];
-
+            $NameFile = $request['filename'];
+            $FileId = Files::where('nombre', $NameFile)
+              ->first();
+            $FileId = $FileId->id;
         }catch(\Exception $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al generar el grupo.',
