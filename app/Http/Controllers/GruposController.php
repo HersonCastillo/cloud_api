@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Grupos as Groups;
 use App\Archivos as Files;
+use Storage;
 
 class GruposController extends Controller
 {
@@ -84,6 +85,48 @@ class GruposController extends Controller
         }catch(\Illuminate\Database\QueryException $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al ordenar los archivos compartidos.',
+                'exception' => 'query'
+            ], 500);
+        }
+    }
+    public function isShared($id){
+        return !is_null(Groups::where('id_file', $id)->first());
+    }
+    public function downloadFile(Request $request){
+        try{
+            $Id = $request['id'];
+            if($this->isShared($Id)){
+                $Data = Groups::orderBy('grupos.id', 'desc')
+                  ->join('archivos', 'archivos.id', '=', 'grupos.id_file')
+                  ->join('usuarios', 'usuarios.id', '=', 'archivos.id_user')
+                  ->select('archivos.nombre', 'usuarios.api_token')
+                  ->first();
+                $Path = $Data->api_token.$Data->nombre;
+                $Url = Storage::disk('public')
+                        ->getDriver()
+                        ->getAdapter()
+                        ->applyPathPrefix($Path);
+                $Url = str_replace("C:\\wamp64\\www\\", "http://localhost/", $Url);
+                $Size = Storage::disk('public')->size($Path);
+                return response()->json([
+                    'success' => 'ok',
+                    'url' => $Url,
+                    'size' => $Size,
+                    'file' => $Data->nombre
+                ], 200);
+            }
+            return response()->json([
+                'error' => 'El archivo no se está compartiendo.',
+                'exception' => 'normal'
+            ], 500);
+        }catch(\Exception $ex){
+            return response()->json([
+                'error' => 'Ocurrió un error al obtener el archivo.',
+                'exception' => 'normal'
+            ], 500);
+        }catch(\Illuminate\Database\QueryException $ex){
+            return response()->json([
+                'error' => 'Ocurrió un error al obtener el archivo.',
                 'exception' => 'query'
             ], 500);
         }
