@@ -35,7 +35,6 @@ Route::group(['prefix' => 'api'], function(){
     });
 
     Route::post('/view/files', 'ArchivosController@viewFiles');
-
     Route::post('/shared', 'GruposController@infoFilesShared');
 
 });
