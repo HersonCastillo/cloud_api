@@ -12,6 +12,11 @@ class GruposController extends Controller
     public function newGroup(Request $request){
         try{
             $Token = $request['token'];
+
+            if(!Login::validate($Token)) return response()->json([
+                'error' => 'La llave de acceso no es válida.'
+            ], 200);
+
             $NameFile = $request['filename'];
             $FileId = Files::where('nombre', $NameFile)
               ->first();
@@ -34,17 +39,22 @@ class GruposController extends Controller
             return response()->json([
                 'error' => 'Ocurrió un error al generar el grupo.',
                 'exception' => 'normal'
-            ], 500);
+            ], 200);
         }catch(\Illuminate\Database\QueryException $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al generar el grupo.',
                 'exception' => 'query'
-            ], 500);
+            ], 200);
         }
     }
     public function quitShare(Request $request){
         try{
             $Token = $request['token'];
+
+            if(!Login::validate($Token)) return response()->json([
+                'error' => 'La llave de acceso no es válida.'
+            ], 200);
+
             $FileName = $request['filename'];
             $FileId = Files::where('nombre', $FileName)
               ->first();
@@ -60,17 +70,22 @@ class GruposController extends Controller
         }catch(\Exception $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al eliminar el grupo.'
-            ], 500);
+            ], 200);
         }catch(\Illuminate\Database\QueryException $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al eliminar el grupo.',
                 'exception' => 'query'
-            ], 500);
+            ], 200);
         }
     }
     public function infoFilesShared(Request $request){
         try{
             $Token = $request['token'];
+
+            if(!Login::validate($Token)) return response()->json([
+                'error' => 'La llave de acceso no es válida.'
+            ], 200);
+
             return Groups::orderBy('grupos.id')
               ->join('archivos', 'archivos.id', '=', 'grupos.id_file')
               ->join('usuarios', 'usuarios.id', '=', 'archivos.id_user')
@@ -81,12 +96,12 @@ class GruposController extends Controller
             return response()->json([
                 'error' => 'Ocurrió un error al ordenar los archivos compartidos.',
                 'exception' => 'normal'
-            ], 500);
+            ], 200);
         }catch(\Illuminate\Database\QueryException $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al ordenar los archivos compartidos.',
                 'exception' => 'query'
-            ], 500);
+            ], 200);
         }
     }
     public function isShared($id){
@@ -118,17 +133,17 @@ class GruposController extends Controller
             return response()->json([
                 'error' => 'El archivo no se está compartiendo.',
                 'exception' => 'normal'
-            ], 500);
+            ], 200);
         }catch(\Exception $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al obtener el archivo.',
                 'exception' => 'normal'
-            ], 500);
+            ], 200);
         }catch(\Illuminate\Database\QueryException $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al obtener el archivo.',
                 'exception' => 'query'
-            ], 500);
+            ], 200);
         }
     }
 }

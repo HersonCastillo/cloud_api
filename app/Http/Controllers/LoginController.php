@@ -8,6 +8,30 @@ use Storage;
 
 class LoginController extends Controller
 {
+    public static function validate($Token){
+        try{
+            $Usuarios = new Users;
+            $Find = $Usuarios::where('api_token', $Token)
+              ->select('api_token')
+              ->first();
+            if(!is_null($Find)) return 1;
+            else return 0;
+            } else return response()->json([
+                'error' => 'Token de acceso no válido.',
+                'message' => 'El código de acceso pudo haber expirado.'
+            ], 200);
+        }catch(\Exception $ex){
+            return response()->json([
+                'error' => 'Token de acceso no válido',
+                'exception' => 'normal'
+            ], 200);
+        }catch(\Illuminate\Database\QueryException $ex){
+            return response()->json([
+                'error' => 'Token de acceso no válido',
+                'exception' => 'query'
+            ], 200);
+        }
+    }
     public function validateToken(Request $request){
         try{
             $Token = $request['token'];
@@ -28,17 +52,17 @@ class LoginController extends Controller
             return response()->json([
                 'error' => 'Token de acceso no válido',
                 'exception' => 'normal'
-            ], 500);
+            ], 200);
         }catch(PDOException $ex){
             return response()->json([
                 'error' => 'Token de acceso no válido',
                 'exception' => 'pdo'
-            ], 500);
+            ], 200);
         }catch(\Illuminate\Database\QueryException $ex){
             return response()->json([
                 'error' => 'Token de acceso no válido',
                 'exception' => 'query'
-            ], 500);
+            ], 200);
         }
     }
     public function login(Request $request){
@@ -64,17 +88,17 @@ class LoginController extends Controller
             return response()->json([
                 'error' => 'Ocurrió un error al iniciar sesión',
                 'exception' => 'normal'
-            ], 500);
+            ], 200);
         }catch(PDOException $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al iniciar sesión.',
                 'exception' => 'pdo'
-            ], 500);
+            ], 200);
         }catch(\Illuminate\Database\QueryException $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al iniciar sesión.',
                 'exception' => 'query'
-            ], 500);
+            ], 200);
         }
     }
     public function createAccount(Request $request){
@@ -104,17 +128,17 @@ class LoginController extends Controller
             return response()->json([
                 'error' => 'Ocurrió un error al crear la cuenta.',
                 'exception' => 'query'
-            ], 500);
+            ], 200);
         }catch(\Exception $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al crear la cuenta.',
                 'exception' => 'normal'
-            ], 500);
+            ], 200);
         }catch(PDOException $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al crear la cuenta.',
                 'exception' => 'pdo'
-            ], 500);
+            ], 200);
         }
     }
 }

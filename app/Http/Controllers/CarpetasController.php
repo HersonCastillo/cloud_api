@@ -15,6 +15,9 @@ class CarpetasController extends Controller
                 if($Count <= 35){
                     $Nombre = $request['ruta'];
                     $Raiz = $request['raiz'];
+                    if(!Login::validate($Raiz)) return response()->json([
+                        'error' => 'La llave de acceso no es válida.'
+                    ], 200);
                     Storage::disk('public')->makeDirectory($Raiz.'/'.$Nombre);
                     return response()->json([
                         'success' => 'Carpeta creado con éxito.'
@@ -23,17 +26,17 @@ class CarpetasController extends Controller
                 return response()->json([
                     'error' => 'El nombre excede el límite admitido.',
                     'exception' => 'no-exp'
-                ], 500);
+                ], 200);
             }
             return response()->json([
                 'error' => 'Nombre no especificado.',
                 'exception' => 'no-exp'
-            ], 500);
+            ], 200);
         }catch(\Exception $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al crear el folder.',
                 'exception' => 'normal'
-            ], 500);
+            ], 200);
         }
     }
 }

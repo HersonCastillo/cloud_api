@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\UsuariosController as User;
+use App\Http\Controllers\LoginController as Login;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Archivos;
@@ -17,6 +18,10 @@ class ArchivosController extends Controller
             $File = $request->file('file');
             $Raiz = $request['token'];
             $Path = $request['path'];
+
+            if(!Login::validate($Raiz)) return response()->json([
+                'error' => 'La llave de acceso no es válida.'
+            ], 200);
 
             $Kernel = $Raiz.$Path;
             $Name = $File->getClientOriginalName();
@@ -45,18 +50,23 @@ class ArchivosController extends Controller
                 'error' => 'Ocurrió un error al subir el archivo',
                 'message' => $ex->getMessage(),
                 'exception' => 'normal'
-            ], 500);
+            ], 200);
         }catch(\Illuminate\Database\QueryException $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al subir el archivo',
                 'exception' => 'query'
-            ], 500);
+            ], 200);
         }
     }
     public function viewFiles(Request $request){
         try{
             $Path = $request['path'];
             $Token = $request['token'];
+
+            if(!Login::validate($Token)) return response()->json([
+                'error' => 'La llave de acceso no es válida.'
+            ], 200);
+
             $Route = "../storage/app/public/";
             $files = scandir($Route.$Token.$Path);
             $files = $this->clear($files);
@@ -69,7 +79,7 @@ class ArchivosController extends Controller
                 'error' => 'Directorio no encontrado',
                 'message' => 'La raiz o el token no son válido.',
                 'exception' => 'notfound'
-            ], 500);
+            ], 200);
         }
     }
     private function clear($arrayFiles){
@@ -82,6 +92,11 @@ class ArchivosController extends Controller
     public function download(Request $request){
         try{
             $Token = $request['token'];
+
+            if(!Login::validate($Token)) return response()->json([
+                'error' => 'La llave de acceso no es válida.'
+            ], 200);
+
             $Path = $request['path'];
             $FileName = $request['filename'];
             $Url = Storage::disk('public')
@@ -96,12 +111,17 @@ class ArchivosController extends Controller
             return response()->json([
                 'error' => 'No se puede descargar el archivo.',
                 'message' => $ex->getMessage()
-            ], 500);
+            ], 200);
         }
     }
     public function deleteOne(Request $request){
         try{
             $Token = $request['token'];
+
+            if(!Login::validate($Token)) return response()->json([
+                'error' => 'La llave de acceso no es válida.'
+            ], 200);
+
             $Path = $request['path'];
             $isFolder = $request['is'];
             $Route = "../storage/app/public/";
@@ -126,12 +146,12 @@ class ArchivosController extends Controller
                 'error' => 'Ocurrió un error al tratar de eliminar un objeto.',
                 'exception' => 'normal',
                 'message' => $ex->getMessage()
-            ], 500);
+            ], 200);
         }catch(\Illuminate\Database\QueryException $ex){
             return response()->json([
                 'error' => 'Ocurrió un error al tratar de eliminar un objeto.',
                 'exception' => 'query'
-            ], 500);
+            ], 200);
         }
     }
 }
